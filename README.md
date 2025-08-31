@@ -43,8 +43,6 @@ pip install --no-cache-dir -r requirements.txt
 
 ## 4. Levantar el Agente
 
-Se ejecuta desde el directorio del proyecto /agent
-
 
 ```bash
 adk web

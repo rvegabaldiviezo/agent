@@ -1,9 +1,8 @@
 import datetime
-from zoneinfo import ZoneInfo
-from typing import Optional
 from google.adk.agents import Agent
 import psycopg2
 import psycopg2.extras
+from typing import Optional
 
 # Conexión a Postgres (el host será "db" porque así lo definimos en docker-compose)
 def get_connection():
@@ -30,23 +29,30 @@ def add_transaction(tipo: str, monto: float, fecha: str, descripcion: str, contr
     """
     try:
         conn = get_connection()
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur = conn.cursor()
+        
         cur.execute(
             """
             INSERT INTO transacciones (tipo, monto, fecha, descripcion, contraparte)
-            VALUES (%s, %s, %s, %s, %s)
-            RETURNING id;
+            VALUES (%s, %s, %s, %s, %s) RETURNING id;
             """,
             (tipo, monto, fecha, descripcion, contraparte)
         )
+        
+        transaction_id = cur.fetchone()[0]
         conn.commit()
-        trans_id = cur.fetchone()["id"]
         cur.close()
         conn.close()
-        return {"status": "success", "message": f"Transacción registrada con ID {trans_id}"}
+        
+        return {
+            "status": "success",
+            "message": f"Transacción de {tipo} registrada exitosamente",
+            "transaction_id": transaction_id,
+            "monto": monto,
+            "fecha": fecha
+        }
     except Exception as e:
         return {"status": "error", "error_message": str(e)}
-
 
 def get_balance() -> dict:
     """Devuelve el balance actual (ingresos - gastos - préstamos)."""
