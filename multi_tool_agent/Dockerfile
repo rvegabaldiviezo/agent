@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copiar código
 COPY agent.py .
 
-CMD ["python", "-u", "agent.py"]
+CMD ["adk", "web"]
