@@ -1,5 +1,3 @@
-fastapi 
 google-adk 
-uvicorn
 psycopg2-binary
 

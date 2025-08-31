@@ -1,4 +1,6 @@
 import datetime
+from zoneinfo import ZoneInfo
+from typing import Optional
 from google.adk.agents import Agent
 import psycopg2
 import psycopg2.extras
@@ -15,7 +17,7 @@ def get_connection():
 
 # ---------------- TOOLS ---------------- #
 
-def add_transaction(tipo: str, monto: float, fecha: str, descripcion: str, contraparte: str = None) -> dict:
+def add_transaction(tipo: str, monto: float, fecha: str, descripcion: str, contraparte: Optional[str] = None) -> dict:
     """
     Agrega una transacción a la base de datos.
     
