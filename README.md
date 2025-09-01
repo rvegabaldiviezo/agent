@@ -51,9 +51,14 @@ adk web
 
 ## 5. Levantar el Agente como container
 
-
+Para levantar por primera vez tenemos asegurarnos que no existan volumenes previos.
 ```bash
-docker-compose down -v && docker-compose up --build -d
+docker-compose down -v
+```
+
+Para levantar los containers.
+```bash
+docker-compose up --build -d
 ```
 
 ## 5. Desactivar el entorno virtual

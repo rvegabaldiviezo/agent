@@ -77,15 +77,15 @@ def get_balance() -> dict:
 
 
     
-def list_transactions(limit: int = 10) -> dict:
+def list_transactions(limit: Optional[int] = None) -> dict:
     """
-    Lista las últimas transacciones.
-    
-    Si limit es 0 o mayor a 100, devuelve hasta 100 transacciones.
-    Además, imprime cada transacción por consola.
+    Lista hasta 100 transacciones más recientes por defecto.
+    Si limit es None, devuelve hasta 100 transacciones.
+    Si limit > 100, devuelve solo 100 y puede avisar al usuario.
     """
-    if limit <= 0 or limit > 100:
-        limit = 100
+    max_limit = 100
+    if limit is None or limit <= 0 or limit > max_limit:
+        limit = max_limit
 
     try:
         conn = get_connection()
@@ -95,8 +95,6 @@ def list_transactions(limit: int = 10) -> dict:
             (limit,)
         )
         rows = cur.fetchall()
-        print("[DEBUG] New consulta:")
-        
         # Convertir Decimal a float y date a string
         for row in rows:
             for k, v in row.items():
@@ -104,15 +102,13 @@ def list_transactions(limit: int = 10) -> dict:
                     row[k] = float(v)
                 elif isinstance(v, (datetime.date, datetime.datetime)):
                     row[k] = v.isoformat()
-            # Imprimir cada transacción en consola
-            print("[DEBUG] Transacción:", row)
-
         cur.close()
         conn.close()
-        return {"status": "success", "transactions": rows}
-
+        result = {"status": "success", "transactions": rows}
+        if len(rows) == max_limit:
+            result["message"] = "Se muestran solo las primeras 100 transacciones. Si necesitas ver más, indícalo."
+        return result
     except Exception as e:
-        print("[ERROR] list_transactions:", e)
         return {"status": "error", "error_message": str(e)}
     
 
@@ -139,21 +135,8 @@ root_agent = Agent(
         "Siempre que el usuario indique un movimiento de dinero (gasto, ingreso o préstamo), "
         "pregunta por el monto, fecha y descripción antes de registrar. "
         "Si es un préstamo, también pregunta a quién. "
-        "El agente debe persistir todo en la base de datos."
-    ),
-    tools=[add_transaction, get_balance, list_transactions],
-)
-
-
-root_agent = Agent(
-    name="finance_agent",
-    model="gemini-2.0-flash",
-    description="Agente para registrar y consultar ingresos, gastos y préstamos personales.",
-    instruction=(
-        "Siempre que el usuario indique un movimiento de dinero (gasto, ingreso o préstamo), "
-        "pregunta por el monto, fecha y descripción antes de registrar. "
-        "Si es un préstamo, también pregunta a quién. "
-        "El agente debe persistir todo en la base de datos."
+        "El agente debe persistir todo en la base de datos. "
+        "Al listar transacciones, muestra hasta 100 automáticamente sin preguntar. Si hay más de 100, pregunta si el usuario quiere ver más. "
         "El agente sabe la fecha de hoy porque tiene el tool get_today_date."
     ),
     tools=[add_transaction, get_balance, list_transactions, get_today_date],
