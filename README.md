@@ -87,16 +87,16 @@ cd agent
 ```bash
 docker-compose up --build -d
 ```
-![Containers](src/containers.png)
+![Containers](multi_tool_agent/src/containers.png)
 
 
 3. Acceder al servidor 
 
 Abre tu navegador y entra a: [http://localhost:8000/](http://localhost:8000/)
 
-![Aplicación desplegada](src/agent-web.png)
+![Aplicación desplegada](multi_tool_agent/src/agent-web.png)
 
-![Logs App](src/logs-app-agent.png)
+![Logs App](multi_tool_agent/src/logs-app-agent.png)
 
 
 ---
