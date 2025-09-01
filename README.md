@@ -49,6 +49,13 @@ adk web
 ```
 
 
+## 5. Levantar el Agente como container
+
+
+```bash
+docker-compose down -v && docker-compose up --build -d
+```
+
 ## 5. Desactivar el entorno virtual
 
 Cuando termines de trabajar:

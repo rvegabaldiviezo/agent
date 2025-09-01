@@ -92,6 +92,18 @@ def list_transactions(limit: int = 10) -> dict:
         return {"status": "error", "error_message": str(e)}
 
 
+# Tool para obtener la fecha actual
+def get_today_date() -> dict:
+    """
+    Devuelve la fecha de hoy en formato YYYY-MM-DD
+    """
+    today = datetime.datetime.now().date()
+    return {
+        "status": "success",
+        "today": today.isoformat()
+    }
+
+
 # ---------------- AGENTE ---------------- #
 
 root_agent = Agent(
@@ -105,4 +117,19 @@ root_agent = Agent(
         "El agente debe persistir todo en la base de datos."
     ),
     tools=[add_transaction, get_balance, list_transactions],
+)
+
+
+root_agent = Agent(
+    name="finance_agent",
+    model="gemini-2.0-flash",
+    description="Agente para registrar y consultar ingresos, gastos y préstamos personales.",
+    instruction=(
+        "Siempre que el usuario indique un movimiento de dinero (gasto, ingreso o préstamo), "
+        "pregunta por el monto, fecha y descripción antes de registrar. "
+        "Si es un préstamo, también pregunta a quién. "
+        "El agente debe persistir todo en la base de datos."
+        "El agente sabe la fecha de hoy porque tiene el tool get_today_date."
+    ),
+    tools=[add_transaction, get_balance, list_transactions, get_today_date],
 )
