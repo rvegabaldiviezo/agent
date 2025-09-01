@@ -87,7 +87,13 @@ cd agent
 
 ### Si ya tenemos el repositorio en el local
 
-3. Construir y levantar los servicios:
+3. Cambiar a la rama develop y traerse los ultimos cambios
+```bash
+git checkout -b develop
+git pull origin develop
+``` 
+
+4. Construir y levantar los servicios:
 
 ```bash
 docker-compose up --build -d
@@ -95,7 +101,7 @@ docker-compose up --build -d
 ![Containers](multi_tool_agent/src/containers.png)
 
 
-4. Acceder al servidor 
+5. Acceder al servidor 
 
 Abre tu navegador y entra a: [http://localhost:8000/](http://localhost:8000/)
 
