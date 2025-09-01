@@ -69,6 +69,9 @@ agent/
 
 ## 4. Uso
 
+
+### Si no tenemos el repositorio en el local
+
 1. Clonar el repositorio.  
 
 Clonar el siguiente repositorio publico.
@@ -77,12 +80,14 @@ Clonar el siguiente repositorio publico.
 git clone https://github.com/rvegabaldiviezo/agent.git
 ``` 
 
-Entrar del directorio de la App.
+2. Entrar del directorio de la App.
 ```bash
 cd agent
 ``` 
 
-2. Construir y levantar los servicios:
+### Si ya tenemos el repositorio en el local
+
+3. Construir y levantar los servicios:
 
 ```bash
 docker-compose up --build -d
@@ -90,7 +95,7 @@ docker-compose up --build -d
 ![Containers](multi_tool_agent/src/containers.png)
 
 
-3. Acceder al servidor 
+4. Acceder al servidor 
 
 Abre tu navegador y entra a: [http://localhost:8000/](http://localhost:8000/)
 

@@ -2,7 +2,6 @@ from google.adk.agents import Agent
 from .tools.transactions import add_transaction, list_transactions
 from .tools.balance import get_balance
 from .tools.date_tools import get_today_date
-from .tools.date_tools import get_weather_and_time
 
     
 # ---------------- AGENTE ---------------- #
@@ -17,7 +16,6 @@ root_agent = Agent(
         "Si es un préstamo, también pregunta a quién. "
         "El agente debe persistir todo en la base de datos. "
         "El agente sabe la fecha de hoy porque tiene el tool get_today_date."
-        "El agente puede obtener el clima y la hora local usando el tool get_weather_and_time."
 
         "Puede calcular balances, listar transacciones, registrar ingresos/gastos/préstamos, mostrar la fecha de hoy y generar una imagen de la tabla de transacciones. "
         
@@ -27,7 +25,6 @@ root_agent = Agent(
         add_transaction, 
         get_balance, 
         list_transactions, 
-        get_today_date, 
-        get_weather_and_time,
+        get_today_date,
     ],
 )
