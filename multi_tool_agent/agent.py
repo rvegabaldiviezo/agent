@@ -1,8 +1,9 @@
-import datetime
 from google.adk.agents import Agent
 import psycopg2
 import psycopg2.extras
 from typing import Optional
+import decimal
+import datetime
 
 # Conexión a Postgres (el host será "db" porque así lo definimos en docker-compose)
 def get_connection():
@@ -75,8 +76,17 @@ def get_balance() -> dict:
         return {"status": "error", "error_message": str(e)}
 
 
+    
 def list_transactions(limit: int = 10) -> dict:
-    """Lista las últimas transacciones."""
+    """
+    Lista las últimas transacciones.
+    
+    Si limit es 0 o mayor a 100, devuelve hasta 100 transacciones.
+    Además, imprime cada transacción por consola.
+    """
+    if limit <= 0 or limit > 100:
+        limit = 100
+
     try:
         conn = get_connection()
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -85,11 +95,26 @@ def list_transactions(limit: int = 10) -> dict:
             (limit,)
         )
         rows = cur.fetchall()
+        print("[DEBUG] New consulta:")
+        
+        # Convertir Decimal a float y date a string
+        for row in rows:
+            for k, v in row.items():
+                if isinstance(v, decimal.Decimal):
+                    row[k] = float(v)
+                elif isinstance(v, (datetime.date, datetime.datetime)):
+                    row[k] = v.isoformat()
+            # Imprimir cada transacción en consola
+            print("[DEBUG] Transacción:", row)
+
         cur.close()
         conn.close()
         return {"status": "success", "transactions": rows}
+
     except Exception as e:
+        print("[ERROR] list_transactions:", e)
         return {"status": "error", "error_message": str(e)}
+    
 
 
 # Tool para obtener la fecha actual
