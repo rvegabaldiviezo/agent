@@ -90,7 +90,9 @@ docker-compose up --build -d
 ![Containers](src/containers.png)
 
 
-3. Acceder al servidor: `http://localhost:8000`  
+3. Acceder al servidor 
+
+Abre tu navegador y entra a: [http://localhost:8000/](http://localhost:8000/)
 
 ![Aplicación desplegada](src/agent-web.png)
 
