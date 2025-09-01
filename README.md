@@ -87,8 +87,14 @@ cd agent
 ```bash
 docker-compose up --build -d
 ```
+![Containers](src/containers.png)
+
 
 3. Acceder al servidor: `http://localhost:8000`  
+
+![Aplicación desplegada](src/agent-web.png)
+
+![Logs App](src/logs-app-agent.png)
 
 
 ---
