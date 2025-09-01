@@ -1,5 +1,5 @@
-fastapi 
-google-adk 
+fastapi
+google-adk
 uvicorn
 psycopg2-binary
-
+requests
