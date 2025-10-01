@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-deployment
+  namespace: finance-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finance-agent
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: finance-agent
+    spec:
+      initContainers:
+      # Esperar a que PostgreSQL esté listo antes de iniciar el agente
+      - name: wait-for-db
+        image: busybox:1.35
+        command: ['sh', '-c', 'until nc -z postgres-0.postgres-service.finance-agent.svc.cluster.local 5432; do echo waiting for postgres; sleep 2; done;']
+      containers:
+      - name: finance-agent
+        # IMPORTANTE: Reemplazar con la imagen construida y subida a un registry
+        # Opción 1: Construir localmente y cargar en Docker Desktop
+        #   docker build -t finance-agent:latest .
+        #   kubectl apply -f k8s/agent-deployment.yaml
+        # Opción 2: Subir a Docker Hub
+        #   docker build -t <tu-usuario>/finance-agent:latest .
+        #   docker push <tu-usuario>/finance-agent:latest
+        # Opción 3: Usar Google Container Registry (GKE)
+        #   docker build -t gcr.io/<project-id>/finance-agent:latest .
+        #   docker push gcr.io/<project-id>/finance-agent:latest
+        image: finance-agent:latest
+        imagePullPolicy: IfNotPresent  # Usar Never si la imagen solo está local
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/app/credentials.json"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_DB
+        - name: DATABASE_URL
+          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres-0.postgres-service.finance-agent.svc.cluster.local:5432/$(POSTGRES_DB)"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3

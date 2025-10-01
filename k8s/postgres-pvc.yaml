@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: finance-agent
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  # Para Docker Desktop usar "hostpath"
+  # Para GKE usar "standard" o "pd-standard"
+  storageClassName: hostpath

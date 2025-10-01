@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: finance-agent
+  labels:
+    name: finance-agent
+    app: finance-agent
