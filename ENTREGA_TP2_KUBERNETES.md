@@ -4,6 +4,16 @@
 
 Este documento explica cómo migrar la aplicación **Finance Agent** (del TP #1) a Kubernetes, las decisiones técnicas tomadas y los cambios necesarios para lograr un buen escalamiento.
 
+---
+
+## REPO CON LOS ARCHIVOS: 
+
+- RAMA: develop
+
+- URL: https://github.com/rvegabaldiviezo/agent/tree/develop/k8s 
+
+---
+
 **Aplicación original:**
 - Agente financiero en Python 3.11 usando Google ADK (Gemini)
 - Base de datos PostgreSQL para persistencia de transacciones
@@ -355,7 +365,7 @@ http://localhost:30080
 3. Esperar que se recree: `kubectl wait --for=condition=ready pod/postgres-0 -n finance-agent`
 4. Verificar que los datos siguen ahí
 
-✅ Si los datos persisten, el PVC está funcionando correctamente.
+Si los datos persisten, el PVC está funcionando correctamente.
 
 ---
 
@@ -363,11 +373,11 @@ http://localhost:30080
 
 La migración a Kubernetes aporta mejoras significativas:
 
-✅ **Escalamiento automático** con HPA
-✅ **Alta disponibilidad** con múltiples replicas
-✅ **Self-healing** (reinicio automático de pods fallidos)
-✅ **Rolling updates** (actualizaciones sin downtime)
-✅ **Persistencia robusta** con PVC
+**Escalamiento automático** con HPA
+**Alta disponibilidad** con múltiples replicas
+**Self-healing** (reinicio automático de pods fallidos)
+**Rolling updates** (actualizaciones sin downtime)
+**Persistencia robusta** con PVC
 
 **Trade-offs:**
 - Más complejidad operativa que Docker Compose
