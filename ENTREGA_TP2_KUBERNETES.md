@@ -6,7 +6,7 @@ Este documento explica cómo migrar la aplicación **Finance Agent** (del TP #1)
 
 ---
 
-## REPO CON LOS ARCHIVOS: 
+## REPO CON LOS ARCHIVOS K8s: 
 
 - RAMA: develop
 
@@ -312,6 +312,12 @@ cd k8s
 chmod +x deploy_k8s_docker_desktop.sh
 ./deploy_k8s_docker_desktop.sh
 ```
+
+Abre tu navegador y entra a: [http://localhost:30080/](http://localhost:30080/)
+
+
+![Testing Unitario](k8s/testing_unitario.png)
+
 
 ### Deployment manual (paso a paso):
 
